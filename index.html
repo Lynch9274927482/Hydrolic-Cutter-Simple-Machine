@@ -1,502 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>3D Hydraulic Cutter Model</title>
-<style>
-  html, body { margin: 0; height: 100%; overflow: hidden; background: #b9a98e; }
-  canvas { position: relative; z-index: 1; display: block; touch-action: none; cursor: grab; }
-  canvas:active { cursor: grabbing; }
-  #hint { position: fixed; left: 12px; bottom: 10px; font: 13px system-ui, sans-serif; color: #9a9aa8; pointer-events: none; }
-  #bg { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; z-index: 0; pointer-events: none; transform: scale(1.2); }
-  #addBtn { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); padding: 12px 26px; font: 600 15px system-ui, sans-serif; color: #fff; background: #2a6df4; border: 0; border-radius: 999px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.4); z-index: 10; }
-  #addBtn:hover:not(:disabled) { background: #3d7bff; }
-  #addBtn:disabled { background: #44485a; color: #9a9eb0; cursor: not-allowed; box-shadow: none; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bayad Po Muna Plsss :(</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      padding: 30px;
+      position: relative;
+    }
+
+    /* Rainbow text */
+    .message {
+      font-size: clamp(28px, 5vw, 55px);
+      font-weight: 900;
+      margin-bottom: 30px;
+
+      background: linear-gradient(
+        90deg,
+        #ff0000,
+        #ff7a00,
+        #ffff00,
+        #00ff00,
+        #00ffff,
+        #008cff,
+        #8a2be2,
+        #ff00ff,
+        #ff0000
+      );
+
+      background-size: 400% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+
+      animation: rainbow 4s linear infinite;
+
+      filter:
+        drop-shadow(0 0 8px rgba(255, 0, 255, 0.4))
+        drop-shadow(0 0 15px rgba(0, 255, 255, 0.25));
+    }
+
+    @keyframes rainbow {
+      to {
+        background-position: 400% center;
+      }
+    }
+
+    /* GIF frame */
+    .cat-frame {
+      width: min(480px, 85vw);
+      height: min(480px, 85vw);
+
+      margin: auto;
+      padding: 6px;
+
+      border-radius: 24px;
+
+      background: linear-gradient(
+        135deg,
+        #ff004c,
+        #ff8a00,
+        #ffee00,
+        #00ff88,
+        #00c8ff,
+        #8a2be2,
+        #ff00c8
+      );
+
+      background-size: 300% 300%;
+      animation: borderGlow 5s ease infinite;
+
+      box-shadow:
+        0 0 20px rgba(255, 0, 128, 0.35),
+        0 0 50px rgba(0, 200, 255, 0.2);
+    }
+
+    .cat {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: 18px;
+      display: block;
+      background: #000;
+    }
+
+    @keyframes borderGlow {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Decorative floating dots */
+    .dot {
+      position: fixed;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: white;
+      opacity: 0.7;
+      animation: float 5s ease-in-out infinite;
+    }
+
+    .dot:nth-child(1) { top: 15%; left: 12%; }
+    .dot:nth-child(2) { top: 70%; left: 8%; animation-delay: 1s; }
+    .dot:nth-child(3) { top: 20%; right: 12%; animation-delay: 2s; }
+    .dot:nth-child(4) { top: 80%; right: 10%; animation-delay: 3s; }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 0.3;
+      }
+
+      50% {
+        transform: translateY(-20px);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+
+      .message {
+        margin-bottom: 20px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<iframe id="bg" src="background.html" tabindex="-1" title="background"></iframe>
-<button id="addBtn">Add object</button>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-// Units: 1 = 1 cm. Front of the machine faces +z (the viewer), up is +y.
-const scene = new THREE.Scene();
-const bg = document.getElementById('bg');   // blurred workshop (background.html) behind the transparent canvas
 
-const camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 0.1, 500);
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.setSize(innerWidth, innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-document.body.appendChild(renderer.domElement);
+  <!-- Decorative dots -->
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
 
-// ---------- Lights ----------
-scene.add(new THREE.HemisphereLight(0xffffff, 0x666677, 0.8));
-const sun = new THREE.DirectionalLight(0xffffff, 0.85);
-sun.position.set(14, 45, 26);
-sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
-Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, near: 1, far: 130 });
-scene.add(sun);
-const fill = new THREE.DirectionalLight(0xbfd0ff, 0.3); fill.position.set(-20, 10, -15); scene.add(fill);
+  <main class="container">
 
-// ---------- Materials ----------
-const M = {
-  mdf:    new THREE.MeshStandardMaterial({ color: 0xa87b4f, roughness: 0.95 }),
-  floor:  new THREE.MeshStandardMaterial({ color: 0xd9dbe2, roughness: 0.8 }),
-  wood:   new THREE.MeshStandardMaterial({ color: 0xebcf91, roughness: 0.8 }),
-  woodDk: new THREE.MeshStandardMaterial({ color: 0xb8975c, roughness: 0.85 }),
-  gold:   new THREE.MeshStandardMaterial({ color: 0xc9a43a, roughness: 0.35, metalness: 0.8 }),
-  ring:   new THREE.MeshStandardMaterial({ color: 0x2c200c, roughness: 0.6 }),
-  black:  new THREE.MeshStandardMaterial({ color: 0x15151a, roughness: 0.6 }),
-  purple: new THREE.MeshStandardMaterial({ color: 0x7a2fd0, roughness: 0.35, metalness: 0.15 }),
-  glass:  new THREE.MeshStandardMaterial({ color: 0xd8ecff, roughness: 0.1, transparent: true, opacity: 0.3, side: THREE.DoubleSide, depthWrite: false }),
-  fluid:  new THREE.MeshStandardMaterial({ color: 0x1b2a6e, roughness: 0.3, transparent: true, opacity: 0.85 }),
-  rubber: new THREE.MeshStandardMaterial({ color: 0x23121f, roughness: 0.7 }),
-  blue:   new THREE.MeshStandardMaterial({ color: 0x2a4fa0, roughness: 0.45 }),
-  redTip: new THREE.MeshStandardMaterial({ color: 0xc02030, roughness: 0.4 }),
-  tube:   new THREE.MeshStandardMaterial({ color: 0xd878c8, roughness: 0.3, transparent: true, opacity: 0.8 }),
-  red:    new THREE.MeshStandardMaterial({ color: 0xd62020, roughness: 0.5 }),
-  green:  new THREE.MeshStandardMaterial({ color: 0x1fb83a, roughness: 0.5 }),
-  silver: new THREE.MeshStandardMaterial({ color: 0xb8bcc4, roughness: 0.3, metalness: 0.8 }),
-};
+    <div class="message">
+      bayad po muna plsss
+    </div>
 
-// ---------- Helpers ----------
-function add(mesh, parent = scene) { mesh.castShadow = true; mesh.receiveShadow = true; parent.add(mesh); return mesh; }
-function box(w, h, d, mat, x, y, z, parent) {
-  const m = add(new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat), parent);
-  m.position.set(x, y, z); return m;
-}
-function cyl(r, h, mat, parent, open = false, seg = 36) {
-  return add(new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, seg, 1, open), mat), parent);
-}
-// Place cylinder with its axis along z (or x) at a position
-function cylZ(r, h, mat, parent, x, y, z) { const c = cyl(r, h, mat, parent); c.rotation.x = Math.PI / 2; c.position.set(x, y, z); return c; }
-function cylX(r, h, mat, parent, x, y, z) { const c = cyl(r, h, mat, parent); c.rotation.z = Math.PI / 2; c.position.set(x, y, z); return c; }
-// Popsicle stick between two points (local coords). Wide face points along "face" axis.
-function stickBetween(a, b, mat = M.wood, w = 0.9, t = 0.25, parent = scene, face = [0, 0, 1]) {
-  const p1 = new THREE.Vector3(...a), p2 = new THREE.Vector3(...b);
-  const dir = p2.clone().sub(p1), len = dir.length(); dir.normalize();
-  const f = new THREE.Vector3(...face);
-  const y = f.sub(dir.clone().multiplyScalar(f.dot(dir))).normalize();
-  const x = new THREE.Vector3().crossVectors(y, dir).normalize();
-  const m = add(new THREE.Mesh(new THREE.BoxGeometry(w, t, len), mat), parent);
-  m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(x, y, dir));
-  m.position.copy(p1).add(p2).multiplyScalar(0.5);
-  return m;
-}
-function wire(points, mat, r = 0.07) {
-  const curve = new THREE.CatmullRomCurve3(points.map(p => p instanceof THREE.Vector3 ? p : new THREE.Vector3(...p)));
-  return add(new THREE.Mesh(new THREE.TubeGeometry(curve, 60, r, 8, false), mat));
-}
+    <div class="cat-frame">
+      <iframe
+        class="cat"
+        src="https://gifdb.com/gif/cat-crying-sad-kitten-tear-drops-suvtyr43lhu661bh.html?embed=true"
+        width="480"
+        height="480"
+        frameborder="0"
+        allowfullscreen>
+      </iframe>
+    </div>
 
-// ---------- Layout constants ----------
-const HEAD_LIFT = 3.4;     // cutter head raised above its resting position
-const BLADE_R = 3.1;
-const Z_FRAME = 0.6;       // frame / syringe centre line
-const Z_BLADE = 2.9;       // blade plane (just over the rear edge of the cutting block)
-const BLOCK = { w: 8.6, h: 3.0, d: 3.0, z: 5.1 };
+  </main>
 
-// ---------- Floor + MDF base ----------
-const deskTex = (() => {
-  const cv = document.createElement('canvas'); cv.width = 512; cv.height = 512;
-  const c = cv.getContext('2d'); c.fillStyle = '#a9794a'; c.fillRect(0, 0, 512, 512);
-  for (let i = 0; i < 160; i++) {
-    c.fillStyle = Math.random() < 0.5 ? 'rgba(70,40,15,0.10)' : 'rgba(255,220,170,0.08)';
-    c.fillRect(0, Math.random() * 512, 512, 1 + Math.random() * 3);
-  }
-  const t = new THREE.CanvasTexture(cv); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3, 2); return t;
-})();
-const desk = new THREE.Mesh(new THREE.BoxGeometry(90, 3, 56), new THREE.MeshStandardMaterial({ map: deskTex, roughness: 0.75 }));
-desk.position.set(0, -2.0, 2); desk.receiveShadow = true; scene.add(desk);       // workbench the machine sits on
-box(24, 0.5, 16.8, M.mdf, 0, -0.25, 0);
-[[-11.2, -7.6], [11.2, -7.6], [-11.2, 7.6], [11.2, 7.6]].forEach(([x, z]) => {   // screws on the underside
-  const s = cyl(0.25, 0.12, M.silver); scene.add(s); s.position.set(x, -0.55, z);
-});
-box(7.0, 0.04, 0.7, M.ring, 0, 0.01, Z_BLADE);   // slot the blade dips into when lowered
-
-// ---------- Battery holder (3 purple cells, cells run front-to-back) ----------
-const batt = new THREE.Group(); batt.position.set(-7.9, 0, -3.5); scene.add(batt);
-box(6.0, 0.9, 8.2, M.black, 0, 0.45, 0, batt);                  // tray floor
-box(0.35, 2.4, 8.2, M.black, -2.82, 1.2, 0, batt);              // side walls
-box(0.35, 2.4, 8.2, M.black, 2.82, 1.2, 0, batt);
-box(5.3, 2.4, 0.35, M.black, 0, 1.2, 3.92, batt);               // front end wall
-box(5.3, 2.4, 0.35, M.black, 0, 1.2, -3.92, batt);              // back end wall
-for (let i = -1; i <= 1; i++) {
-  const c = cyl(0.88, 7.4, M.purple, batt); c.rotation.x = Math.PI / 2; c.position.set(i * 1.78, 1.85, 0);
-  cylZ(0.3, 0.2, M.silver, batt, i * 1.78, 1.85, -3.75);        // + nub
-}
-[-1.8, 1.8].forEach(x => cylZ(0.28, 0.1, M.silver, batt, x, 1.0, 4.12));  // terminals on the front wall
-
-// ---------- Frame: A-frame of popsicle sticks (fixed) ----------
-const frame = new THREE.Group(); scene.add(frame);
-const LEG_TOP = 17.5;
-const xAt = y => 3.4 - 1.6 * y / LEG_TOP;   // leg x-position at height y
-[-1, 1].forEach(s => {
-  stickBetween([s * 3.4, 0, Z_FRAME], [s * 1.8, LEG_TOP, Z_FRAME], M.wood, 0.9, 0.25, frame);
-  box(1.4, 0.3, 2.2, M.woodDk, s * 3.4, 0.15, Z_FRAME, frame);                 // foot pads
-  cylZ(0.12, 0.5, M.silver, frame, s * 3.4, 0.5, Z_FRAME + 0.15);              // foot screws
-});
-[[1.6, xAt(1.6)]].forEach(([y, hx]) => {                               // cross braces
-  stickBetween([-hx, y, Z_FRAME - 0.3], [hx, y, Z_FRAME - 0.3], M.wood, 0.9, 0.25, frame);
-  stickBetween([-hx, y, Z_FRAME + 0.3], [hx, y, Z_FRAME + 0.3], M.woodDk, 0.7, 0.25, frame);
-});
-
-// ---------- Cutter head: arms + syringe + motor + blade (rises/falls as one) ----------
-const head = new THREE.Group(); head.position.set(0, HEAD_LIFT, 0); scene.add(head);
-
-// arms (sandwich the leg tops), pivot bolts and bridges
-[-1, 1].forEach(s => {
-  [Z_FRAME + 1.0, Z_FRAME - 1.0].forEach(z => {
-    stickBetween([s * 2.5, 12.8, z], [s * 1.75, 7.4, z], M.wood, 0.85, 0.22, head);
-  });
-  cylZ(0.17, 2.8, M.silver, head, s * 2.5, 12.8, Z_FRAME);                      // pivot bolt
-});
-// flat contact cap on top of the motor (dynamo) - the plunger pad presses on this
-box(1.6, 0.3, 2.0, M.black, 0, 4.6, Z_FRAME, head);                             // top face at y = 4.75
-
-// plunger assembly (rides with the head): flat blue pad on the plate, rod, rubber stopper inside the barrel
-const plunger = new THREE.Group(); plunger.position.set(0, 0, Z_FRAME); head.add(plunger);
-cyl(0.95, 0.35, M.blue, plunger).position.y = 4.925;      // pad bottom sits exactly on the motor cap
-box(1.5, 4.5, 0.28, M.blue, 0, 7.35, 0, plunger);
-box(0.28, 4.5, 1.5, M.blue, 0, 7.35, 0, plunger);
-cyl(0.8, 0.8, M.rubber, plunger).position.y = 10.0;
-
-// cutter syringe barrel: FIXED to the frame, nozzle + tube connector at the top
-const BARREL_TOP = 14.1;
-const vs = new THREE.Group(); vs.position.set(0, 0, Z_FRAME); scene.add(vs);
-cyl(0.85, 5.0, M.glass, vs, true).position.y = 11.6;                             // barrel 9.1 .. 14.1
-const nozzle = add(new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.85, 1.1, 32), M.glass), vs); nozzle.position.y = 14.65;
-cyl(0.2, 1.1, M.fluid, vs).position.y = 14.65;
-cyl(0.42, 1.4, M.glass, vs).position.y = 15.9;                                   // tube connector
-cyl(0.2, 1.4, M.fluid, vs).position.y = 15.9;
-const flangeRing = add(new THREE.Mesh(new THREE.RingGeometry(0.8, 1.5, 36), M.glass), vs);
-flangeRing.rotation.x = -Math.PI / 2; flangeRing.position.y = 9.1;              // finger flange (rod passes through)
-const cutFluid = cyl(0.72, 1, M.fluid, vs);                                      // grows as the plunger is pushed down
-[9.7, 12.0].forEach(y => {                                                      // frame-mounted holders for the barrel
-  const ring = cyl(1.2, 1.0, M.wood, frame, true); ring.position.set(0, y, Z_FRAME);
-  [-1, 1].forEach(sd => stickBetween([sd * xAt(y), y, Z_FRAME], [sd * 1.2, y, Z_FRAME], M.wood, 0.7, 0.25, frame));
-});
-
-// motor (behind the syringe), shaft and blade
-cylZ(1.1, 3.0, M.silver, head, 0, 3.5, Z_FRAME);                           // motor spans z -0.9 .. 2.1
-cylZ(0.5, 0.5, M.black, head, 0, 3.5, -1.15);
-cylZ(0.2, 4.0, M.silver, head, 0, 3.5, 1.2);
-[-0.6, 0.6].forEach(x => box(0.3, 0.3, 0.3, M.silver, x, 3.5, -1.35, head));     // motor terminals
-
-const bladeG = new THREE.Group(); bladeG.position.set(0, 3.5, Z_BLADE); head.add(bladeG);
-(function () {
-  const teeth = 18, R = BLADE_R, r = BLADE_R * 0.79, shape = new THREE.Shape();
-  for (let k = 0; k < teeth; k++) {
-    const a0 = (k / teeth) * Math.PI * 2, step = Math.PI * 2 / teeth;
-    [[r, a0], [R, a0 + step * 0.55], [r, a0 + step]].forEach(([rad, ang], i) => {
-      const x = Math.cos(ang) * rad, y = Math.sin(ang) * rad;
-      if (k === 0 && i === 0) shape.moveTo(x, y); else shape.lineTo(x, y);
-    });
-  }
-  const hole = new THREE.Path(); hole.absarc(0, 0, 0.2, 0, Math.PI * 2, true); shape.holes.push(hole);
-  const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.22, bevelEnabled: false });
-  geo.translate(0, 0, -0.11);
-  add(new THREE.Mesh(geo, M.gold), bladeG);
-  for (let i = 1; i <= 6; i++) {
-    const ring = add(new THREE.Mesh(new THREE.TorusGeometry(i * 0.38, 0.03, 8, 64), M.ring), bladeG);
-    ring.position.z = 0.12;
-  }
-  const hub = cyl(0.28, 0.5, M.gold, bladeG); hub.rotation.x = Math.PI / 2; hub.position.z = 0.3;
-})();
-
-// ---------- Cutting block (5 sticks side by side) ----------
-const block = new THREE.Group(); block.position.set(0, 0, BLOCK.z); scene.add(block);
-box(BLOCK.w, BLOCK.h, BLOCK.d, M.wood, 0, BLOCK.h / 2, 0, block);
-for (let i = 1; i < 5; i++) {
-  const x = -BLOCK.w / 2 + i * (BLOCK.w / 5);
-  box(0.04, 0.02, BLOCK.d, M.ring, x, BLOCK.h + 0.01, 0, block);
-  box(0.04, BLOCK.h, 0.02, M.ring, x, BLOCK.h / 2, BLOCK.d / 2 + 0.01, block);
-}
-
-// ---------- On/off switch (2 cm left of the block) ----------
-const sw = new THREE.Group(); sw.position.set(-(BLOCK.w / 2 + 2 + 1.3), 0, BLOCK.z); scene.add(sw);
-box(2.6, 1.2, 1.8, M.black, 0, 0.6, 0, sw);
-box(1.9, 0.12, 1.2, M.silver, 0, 1.22, 0, sw);
-const rocker = box(1.5, 0.45, 0.95, M.red, 0, 1.45, 0, sw); rocker.rotation.z = 0.28;
-[-0.5, 0.5].forEach(x => { box(0.3, 0.1, 0.4, M.silver, x, 1.1, -1.0, sw); box(0.1, 0.6, 0.3, M.silver, x, 0.8, -0.95, sw); });
-sw.updateMatrixWorld(true);
-const lugIn = sw.localToWorld(new THREE.Vector3(-0.5, 1.1, -1.1));
-const lugOut = sw.localToWorld(new THREE.Vector3(0.5, 1.1, -1.1));
-
-// ---------- Wires: battery -> switch -> motor ----------
-batt.updateMatrixWorld(true);
-const bMinus = batt.localToWorld(new THREE.Vector3(-1.8, 1.0, 4.2));
-const bPlus = batt.localToWorld(new THREE.Vector3(1.8, 1.0, 4.2));
-const dynWires = [];
-function wireGeo(points) {
-  return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(p => p instanceof THREE.Vector3 ? p : new THREE.Vector3(...p))), 60, 0.07, 8, false);
-}
-function dynWire(fn, mat) { const m = wire(fn(), mat); dynWires.push({ m, fn }); }
-let lastWireY = null;
-function updateWires() {
-  const y = head.position.y;
-  if (lastWireY !== null && Math.abs(y - lastWireY) < 0.002) return;
-  lastWireY = y;
-  dynWires.forEach(w => { w.m.geometry.dispose(); w.m.geometry = wireGeo(w.fn()); });
-}
-// green: battery minus -> motor terminal (follows the motor)
-dynWire(() => { const my = 3.5 + head.position.y; return [bMinus, [-9.9, 0.3, 2.2], [-6.6, 0.3, 1.4], [-4.5, 2.5, -1.4], [-2.5, 0.5 * (my + 2.5), -2.0], [-0.6, my, -1.45]]; }, M.green);
-// red: battery plus -> switch (fixed)
-wire([bPlus, [-6.4, 0.3, 2.4], [-7.0, 0.3, 3.6], lugIn], M.red);
-// red: switch -> motor terminal (follows the motor)
-dynWire(() => { const my = 3.5 + head.position.y; return [lugOut, [-5.4, 0.3, 3.0], [-4.0, 0.3, 1.0], [-3.9, 2.6, -2.0], [-1.5, 0.5 * (my + 2.5), -2.1], [0.6, my, -1.45]]; }, M.red);
-
-// ---------- Pump syringe (lying on the base, tip toward the back) ----------
-const hs = new THREE.Group(); hs.position.set(10.2, 0.85, 0); hs.rotation.x = Math.PI / 2; scene.add(hs);  // local +y = toward front
-cyl(0.8, 6.0, M.glass, hs, true).position.y = 0.6;
-const pumpFluid = cyl(0.68, 4.2, M.fluid, hs); pumpFluid.position.y = -0.2;
-const pumpStopper = cyl(0.76, 0.8, M.rubber, hs); pumpStopper.position.y = 2.9;
-const hNoz = add(new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.3, 1.3, 32), M.redTip), hs); hNoz.position.y = -3.05;
-cyl(0.3, 0.9, M.redTip, hs).position.y = -4.0;
-cyl(1.5, 0.2, M.glass, hs).position.y = 3.65;
-box(1.5, 4.0, 0.28, M.blue, 0, 5.6, 0, hs);
-box(0.28, 4.0, 1.5, M.blue, 0, 5.6, 0, hs);
-cyl(0.95, 0.35, M.blue, hs).position.y = 7.75;
-
-// ---------- Hydraulic tube: both ends are fixed (cutter barrel connector -> pump syringe tip) ----------
-(function () {
-  const pts = [
-    [0, 15.9, Z_FRAME], [0.05, 17.1, Z_FRAME], [1.6, 18.7, 0.4], [4.5, 18.1, -0.5],
-    [7.2, 14.0, -1.8], [9.2, 8.5, -3.4], [10.2, 3.6, -5.6], [10.2, 1.2, -5.4],
-    [10.2, 0.85, -4.7], [10.2, 0.85, -3.7]          // slides over the red tip of the pump syringe
-  ].map(p => new THREE.Vector3(...p));
-  const tube = add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 180, 0.34, 14, false), M.tube));
-  tube.castShadow = false;
-})();
-
-// ---------- Cardboard strip ----------
-const CB = { w: 5.4, t: 0.25, L: 1.4, n: 5, startZ: 7.4 };
-const CB_READY_Z = Z_BLADE - CB.L;                   // leading-edge position that puts exactly one slice past the blade
-const CB_TOP = BLOCK.h + CB.t;
-const BLOCK_REAR_Z = BLOCK.z - BLOCK.d / 2;
-M.card = new THREE.MeshStandardMaterial({
-  map: (() => {
-    const cv = document.createElement('canvas'); cv.width = 64; cv.height = 8;
-    const c = cv.getContext('2d'); c.fillStyle = '#c9a066'; c.fillRect(0, 0, 64, 8);
-    c.fillStyle = 'rgba(110,70,25,0.35)'; for (let i = 0; i < 64; i += 4) c.fillRect(i, 0, 1.5, 8);
-    const t = new THREE.CanvasTexture(cv); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3, 1); return t;
-  })(),
-  roughness: 0.95, transparent: true, opacity: 0
-});
-const strip = new THREE.Group(); strip.position.set(0, BLOCK.h, CB.startZ); strip.visible = false; scene.add(strip);
-let slices = [], pieces = [], cbState = 'none', cbTimer = 0, cbEntering = false;   // none | moving | ready | finishing
-const addBtn = document.getElementById('addBtn');
-addBtn.addEventListener('click', () => {
-  if (cbState !== 'none') return;
-  cbState = 'moving'; cbEntering = true; addBtn.disabled = true;
-  M.card.opacity = 0; strip.visible = true; strip.position.z = CB.startZ;
-  for (let i = 0; i < CB.n; i++) {
-    const m = add(new THREE.Mesh(new THREE.BoxGeometry(CB.w, CB.t, CB.L - 0.03), M.card), strip);
-    m.position.set(0, CB.t / 2, (i + 0.5) * CB.L); slices.push(m);
-  }
-});
-function detachSlice() { const m = slices.shift(); scene.attach(m); return m; }   // keeps its world position
-function cutSlice() {
-  const m = detachSlice();
-  const dir = Math.random() < 0.5 ? -1 : 1;
-  pieces.push({
-    m, landed: false, restY: 0.13 + pieces.length * 0.04,
-    vx: dir * (1.0 + Math.random() * 1.8), vy: 0.5 + Math.random() * 1.5, vz: -(0.6 + Math.random() * 2.0),
-    wx: (Math.random() - 0.5) * 7, wy: (Math.random() - 0.5) * 5, wz: dir * (2 + Math.random() * 4)
-  });
-  slices.forEach((sl, i) => sl.position.z = (i + 0.5) * CB.L);   // remaining slices keep their world spot
-  strip.position.z = Z_BLADE;                                    // new leading edge = the cut line
-  cbState = 'moving';
-}
-// The last piece has nothing left to hold it: once its centre slides past the block edge it tips off and falls.
-function tipOff() {
-  const m = detachSlice();
-  pieces.push({
-    m, landed: false, restY: 0.13 + pieces.length * 0.04, vx: 0, vy: 0, vz: 0, wx: 0, wy: 0, wz: 0,
-    tip: { a: 0, w: 0.6, dz: m.position.z - BLOCK_REAR_Z, dy: m.position.y - BLOCK.h }
-  });
-  cbState = 'finishing'; cbTimer = 0;
-}
-function updateCardboard(dt) {
-  if (cbState === 'moving' && head.position.y >= 3.0) {          // only slides while the blade is up
-    // spawn slide is fast and eases out near the blade; later feeds between cuts stay slow
-    const v = cbEntering ? Math.min(4.0, 0.8 + (strip.position.z - CB_READY_Z) * 1.4) : 1.2;
-    strip.position.z = Math.max(CB_READY_Z, strip.position.z - v * dt);
-    M.card.opacity = Math.min(1, (CB.startZ - strip.position.z) / 1.5);
-    if (slices.length === 1 && strip.position.z + CB.L / 2 < BLOCK_REAR_Z - 0.3) tipOff();
-    else if (strip.position.z <= CB_READY_Z + 1e-3) { cbState = 'ready'; cbEntering = false; }
-  }
-  if (cbState === 'ready' && machineOn && head.position.y <= 2.6) cutSlice();   // blade bottom is below the cardboard
-  pieces.forEach(p => {
-    const m = p.m;
-    if (p.tip) {                                                  // pivoting over the block's rear edge
-      const t = p.tip; t.w += 12 * dt; t.a += t.w * dt;
-      const sa = Math.sin(t.a), ca = Math.cos(t.a);
-      m.position.y = BLOCK.h + t.dy * ca + t.dz * sa;
-      m.position.z = BLOCK_REAR_Z - t.dy * sa + t.dz * ca;
-      m.rotation.x = -t.a;
-      if (t.a > 1.0) {
-        p.vy = -0.8; p.vz = -t.w * 0.5; p.vx = (Math.random() - 0.5) * 1.5;
-        p.wx = -t.w; p.wy = (Math.random() - 0.5) * 2; p.wz = (Math.random() - 0.5) * 2; p.tip = null;
-      }
-      return;
-    }
-    if (!p.landed) {
-      p.vy -= 45 * dt;
-      m.position.x += p.vx * dt; m.position.y += p.vy * dt; m.position.z += p.vz * dt;
-      m.rotation.x += p.wx * dt; m.rotation.y += p.wy * dt; m.rotation.z += p.wz * dt;
-      if (m.position.y <= p.restY) { m.position.y = p.restY; p.landed = true; }
-    } else {
-      const k = Math.min(1, dt * 12);
-      m.rotation.x += (Math.round(m.rotation.x / Math.PI) * Math.PI - m.rotation.x) * k;   // settle flat
-      m.rotation.z += (Math.round(m.rotation.z / Math.PI) * Math.PI - m.rotation.z) * k;
-      m.rotation.y += p.wy * dt * 0.3; p.wy *= Math.max(0, 1 - 6 * dt);
-      m.position.x = Math.max(-11.5, Math.min(11.5, m.position.x + p.vx * dt));
-      m.position.z = Math.max(-7.5, m.position.z + p.vz * dt);
-      const f = Math.max(0, 1 - 7 * dt); p.vx *= f; p.vz *= f;
-    }
-  });
-  if (cbState === 'finishing') {
-    cbTimer += dt;
-    if (cbTimer > 2.5) {
-      M.card.opacity = Math.max(0, 1 - (cbTimer - 2.5) / 1.5);
-      if (M.card.opacity <= 0) {                                  // all gone -> ready for a new object
-        pieces.forEach(p => scene.remove(p.m)); pieces = [];
-        strip.visible = false; cbState = 'none'; addBtn.disabled = false;
-      }
-    }
-  }
-}
-
-// ---------- Interactive controls ----------
-let machineOn = false;
-let pumpHeld = false;
-let headTravel = 0;
-let bladeSpin = 0;
-
-const pumpPlunger = new THREE.Group();
-hs.add(pumpPlunger);
-const plungerParts = hs.children.filter(o => o.position.y > 4.5).concat([pumpStopper]);
-plungerParts.forEach(o => pumpPlunger.add(o));
-
-const pumpHit = new THREE.Mesh(new THREE.BoxGeometry(3.2, 8.8, 3.2), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }));
-pumpHit.position.set(0, 3.7, 0);
-pumpHit.userData.pump = true;
-hs.add(pumpHit);
-
-const switchHit = new THREE.Mesh(new THREE.BoxGeometry(3.5, 2.6, 2.5), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }));
-switchHit.position.set(0, 1.35, 0);
-switchHit.userData.switch = true;
-sw.add(switchHit);
-
-function setMachinePower(on) {
-  machineOn = on;
-  rocker.rotation.z = on ? -0.28 : 0.28;
-  rocker.material = on ? M.green : M.red;
-}
-
-// ---------- Orbit controls (no dependencies) ----------
-const target0 = new THREE.Vector3(1, 9, 1.5);
-const target = target0.clone();
-let theta = 0.5, phi = 1.2, dist = 46;
-const pointers = new Map(); let lastPinch = 0;
-function updateCam() {
-  phi = Math.max(0.1, Math.min(Math.PI / 2 - 0.03, phi));   // stay above the desk
-  dist = Math.max(6, Math.min(90, dist));
-  camera.position.set(
-    target.x + dist * Math.sin(phi) * Math.sin(theta),
-    target.y + dist * Math.cos(phi),
-    target.z + dist * Math.sin(phi) * Math.cos(theta));
-  camera.lookAt(target);
-  // subtle parallax; shift is proportional to the screen width and always smaller than the scale margin,
-  // so the iframe edges can never show (scale 1.2 = 10% spare on each side, shift max 4%)
-  bg.style.transform = 'translateX(' + (-Math.sin(theta) * innerWidth * 0.04).toFixed(1) + 'px) scale(1.2)';
-}
-const el = renderer.domElement;
-el.addEventListener('contextmenu', e => e.preventDefault());
-
-const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2();
-function interactionAt(e) {
-  const rect = el.getBoundingClientRect();
-  pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-  pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-  raycaster.setFromCamera(pointer, camera);
-  const hits = raycaster.intersectObjects([switchHit, pumpHit], false);
-  return hits.length ? hits[0].object.userData : null;
-}
-
-let pumpPointer = null;
-
-el.addEventListener('dblclick', () => { target.copy(target0); theta = 0.5; phi = 1.2; dist = 46; updateCam(); });
-el.addEventListener('pointerdown', e => {
-  el.setPointerCapture(e.pointerId);
-  const hit = interactionAt(e);
-  if (hit && hit.switch) { setMachinePower(!machineOn); return; }
-  if (hit && hit.pump) { pumpHeld = true; pumpPointer = e.pointerId; return; }
-  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY, btn: e.button });
-});
-function endPointer(e) {
-  if (e.pointerId === pumpPointer) { pumpHeld = false; pumpPointer = null; }
-  pointers.delete(e.pointerId); lastPinch = 0;
-}
-el.addEventListener('pointerup', endPointer);
-el.addEventListener('pointercancel', endPointer);
-el.addEventListener('pointermove', e => {
-  const p = pointers.get(e.pointerId); if (!p) return;
-  const dx = e.clientX - p.x, dy = e.clientY - p.y;
-  p.x = e.clientX; p.y = e.clientY;
-  if (pointers.size === 2) {
-    const [a, b] = [...pointers.values()];
-    const d = Math.hypot(a.x - b.x, a.y - b.y);
-    if (lastPinch) dist *= lastPinch / d;
-    lastPinch = d;
-  } else if (p.btn === 2 || e.shiftKey) {
-    const right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0);
-    const up = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 1);
-    target.addScaledVector(right, -dx * dist * 0.0012).addScaledVector(up, dy * dist * 0.0012);
-  } else { theta -= dx * 0.008; phi -= dy * 0.008; }
-  updateCam();
-});
-el.addEventListener('wheel', e => { e.preventDefault(); dist *= 1 + Math.sign(e.deltaY) * 0.08; updateCam(); }, { passive: false });
-addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-});
-
-updateCam();
-let lastTime = performance.now();
-const PUMP_STROKE = 3.8;     // pump plunger travel (volume-matched to the cutter plunger travel)
-(function loop(now) {
-  const dt = Math.min(0.05, (now - lastTime) / 1000);
-  lastTime = now;
-
-  // Cardboard under the blade stops the blade unless the machine is on and the slice is lined up.
-  const materialUnder = slices.length > 0 && strip.position.z < Z_BLADE - 0.02;
-  const blocked = materialUnder && (!machineOn || cbState !== 'ready');
-  const maxTravel = blocked ? HEAD_LIFT - (CB_TOP - 0.4) : HEAD_LIFT;     // blade bottom rests on the cardboard
-
-  const targetTravel = pumpHeld ? maxTravel : 0;
-  const speed = pumpHeld ? 1.15 : 2.0;
-  headTravel += (targetTravel - headTravel) * Math.min(1, dt * speed);
-  head.position.y = HEAD_LIFT - headTravel;   // pushed down by the cutter plunger (rides on the head group)
-
-  // hydraulics: pump plunger and cutter plunger are coupled by the fluid
-  pumpPlunger.position.y = -PUMP_STROKE * (headTravel / HEAD_LIFT);
-  const pumpLen = 4.2 + pumpPlunger.position.y;
-  pumpFluid.scale.y = pumpLen / 4.2; pumpFluid.position.y = -2.3 + pumpLen / 2;
-  const cutLen = BARREL_TOP - (head.position.y + 10.0 + 0.4);               // fluid between nozzle and stopper
-  cutFluid.scale.y = Math.max(0.01, cutLen); cutFluid.position.y = BARREL_TOP - cutLen / 2;
-
-  if (machineOn) { bladeSpin += dt * 18; bladeG.rotation.z = bladeSpin; }
-  updateCardboard(dt);
-  updateWires();
-  renderer.render(scene, camera);
-  requestAnimationFrame(loop);
-})(performance.now());
-</script>
 </body>
 </html>
